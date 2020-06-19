@@ -1,0 +1,36 @@
+{
+  "name": "lonecat/orm",
+  "description": "Simple ORM implementation",
+  "minimum-stability": "stable",
+  "license": "AGPL-3.0-only",
+  "authors": [
+    {
+      "name": "Lone Cat",
+      "email": "mail@lone-cat.dev"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "LoneCat\\ORM\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/",
+      "": ""
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "require": {
+    "php": ">=7.4",
+    "ext-mbstring": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "*"
+  },
+  "scripts": {
+    "test": "phpunit --colors=always"
+  }
+}
