@@ -3,3 +3,4 @@
 /composer.lock
 /docker/
 /docker-compose.yml
+/sqlite/
