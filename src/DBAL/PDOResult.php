@@ -26,4 +26,8 @@ class PDOResult
         return $this->statement->fetchAll();
     }
 
+    public function rowCount() {
+        return $this->statement->rowCount();
+    }
+
 }

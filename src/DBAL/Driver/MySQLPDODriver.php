@@ -11,7 +11,6 @@ class MySQLPDODriver
     extends PDODriver
 {
 
-
     // credentials
     private string $server;
     private int $port;
@@ -49,11 +48,6 @@ class MySQLPDODriver
 
     public function generateOptions(array $options): array
     {
-        return array_merge(
-            parent::generateOptions($options),
-            [
-                PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . $options[self::CHARSET],
-            ]
-        );
+        return parent::generateOptions($options) + [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . $options[self::CHARSET]];
     }
 }
