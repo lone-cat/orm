@@ -2,14 +2,13 @@
 
 namespace LoneCat\ORM\DBAL;
 
-use LoneCat\ORM\DBAL\Connection\PDOMySQLConnection;
-use LoneCat\ORM\DBAL\Connection\PDOSqLiteConnection;
 use LoneCat\ORM\DBAL\Driver\PDODriver;
 use LoneCat\ORM\DBAL\Driver\MySQLPDODriver;
 use LoneCat\ORM\DBAL\Driver\SqLitePDODriver;
 use LoneCat\ORM\DBAL\Exceptions\DBALException;
 use LoneCat\ORM\DBAL\Platform\AbstractPlatform;
 use LoneCat\ORM\DBAL\Types\Type;
+use PDOException;
 
 class Connection
 {
@@ -45,7 +44,7 @@ class Connection
             try {
                 $this->connection = $this->driver->connect($this->options);
                 return true;
-            } catch (\PDOException $e) {
+            } catch (PDOException $e) {
                 throw new DBALException('db connection failed');
             }
         }
@@ -131,34 +130,33 @@ class Connection
 
         return empty($orderBy)
             ? ''
-            : ' ORDER BY ' . implode($orderBy);
+            : ' ORDER BY ' . implode($orderBy)
         ;
     }
 
     public function select(string $tableName, array $conditions = [], array $types = [], array $orderBy = []): PDOResult
     {
-        $tableName = $this->quoteIdentifier($tableName);
-
-        $orderByExpr = $this->getOrderByExpr($orderBy);
-
-        if (empty($conditions)) {
-            return $this->executeQuery('SELECT * FROM ' . $tableName . $orderByExpr);
-        }
-
         [$columns, $values, $conditions, $types] = $this->generateConditions($conditions, $types);
 
-        return $this->executeQuery( 'SELECT * FROM ' . $tableName . ' WHERE ' . implode(' AND ', $conditions) . $orderByExpr,
+        return $this->selectWithRawWhere(
+            $tableName,
+            implode(' AND ', $conditions),
             $values,
-            $types
+            $types,
+            $orderBy
         );
     }
 
-    public function selectWithRawWhere(string $tableName, string $where, array $parameters, array $types = [], array $orderBy = []): PDOResult
+    public function selectWithRawWhere(string $tableName, string $where, array $values = [], array $types = [], array $orderBy = []): PDOResult
     {
         $tableName = $this->quoteIdentifier($tableName);
 
         $orderByExpr = $this->getOrderByExpr($orderBy);
 
+        return $this->executeQuery( 'SELECT * FROM ' . $tableName .  (empty($where) ? '' : ' WHERE ' . $where) . $orderByExpr,
+            $values,
+            $types
+        );
     }
 
     public function delete(string $tableName, array $conditions, array $types = []): int
