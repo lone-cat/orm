@@ -2,25 +2,27 @@
 
 namespace LoneCat\ORM;
 
-use PDO;
+use LoneCat\ORM\DBAL\Connection\Connection;
+use LoneCat\ORM\DBAL\PDOStatement;
 
 class DBAL
 {
 
-    private PDO $pdo;
+    private Connection $connection;
 
-    public function __construct(PDO $pdo)
+    public function __construct(Connection $connection)
     {
-        $this->pdo = $pdo;
-
-        $a = $pdo->prepare('select * from a');
+        $this->connection = $connection;
     }
 
-    public function queryFullTable(string $table_name)
+    public function queryFullTable(string $table_name): PDOStatement
     {
-
+        return $this->connection->query('SELECT * FROM ' . $table_name);
     }
 
-    protected function
+    public function queryTableWithRawWhere(string $table_name, string $where_statement, array $vars = []): PDOStatement
+    {
+        return $this->connection->query('SELECT * FROM ' . $table_name . ' WHERE ' . $where_statement, $vars);
+    }
 
 }
