@@ -4,4 +4,4 @@
 /docker/
 /docker-compose.yml
 /sqlite/
-/mysql/
+/mysql/data/
